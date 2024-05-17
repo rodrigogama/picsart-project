@@ -1,0 +1,1 @@
+export { ColorDropperPage } from "./ColorDropperPage";
