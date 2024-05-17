@@ -1,9 +1,5 @@
-import { Navbar } from "./components/Navbar";
+import { PageShell } from "./components/PageShell";
 
 export const App = () => {
-  return (
-    <main>
-      <Navbar />
-    </main>
-  );
+  return <PageShell />;
 };
