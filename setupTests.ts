@@ -1,6 +1,7 @@
 import { afterEach } from "vitest";
 import { cleanup } from "@testing-library/react";
 import "@testing-library/jest-dom";
+import "vitest-webgl-canvas-mock";
 
 class MockFileReader {
   result: string | ArrayBuffer | null = null;
