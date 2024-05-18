@@ -2,8 +2,8 @@ import { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import clsx from "clsx";
 import { CloudArrowUpIcon } from "@heroicons/react/24/solid";
-import { sixteenMB } from "../../shared/consts";
 import { FileReaderHelper } from "../../shared/utils/helpers";
+import { sixteenMB } from "../../shared/constants";
 
 export const ImageDropzone: React.FC<Props> = ({ onImageLoaded }) => {
   const onDrop = useCallback(
