@@ -3,7 +3,7 @@ import { useDropzone } from "react-dropzone";
 import clsx from "clsx";
 import { CloudArrowUpIcon } from "@heroicons/react/24/solid";
 import { FileReaderHelper } from "../../shared/utils/helpers";
-import { sixteenMB } from "../../shared/constants";
+import { SIXTEEN_MB } from "../../shared/constants";
 
 export const ImageDropzone: React.FC<Props> = ({ onImageLoaded }) => {
   const onDrop = useCallback(
@@ -30,7 +30,7 @@ export const ImageDropzone: React.FC<Props> = ({ onImageLoaded }) => {
     onDrop,
     accept: { "image/*": [] },
     maxFiles: 1,
-    maxSize: sixteenMB,
+    maxSize: SIXTEEN_MB,
     multiple: false,
   });
 
