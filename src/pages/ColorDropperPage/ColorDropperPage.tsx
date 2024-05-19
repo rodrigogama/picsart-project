@@ -54,7 +54,7 @@ export const ColorDropperPage = () => {
   const handleCanvasClick = (
     event: React.MouseEvent<HTMLCanvasElement, MouseEvent>
   ) => {
-    if (!canvasManager) return;
+    if (!isColorDropperEnabled || !canvasManager) return;
 
     const { clientX, clientY } = event;
     const color = canvasManager.getColorAtPosition(clientX, clientY);
