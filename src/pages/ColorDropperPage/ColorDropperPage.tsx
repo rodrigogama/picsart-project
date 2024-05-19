@@ -17,6 +17,7 @@ export const ColorDropperPage = () => {
     selectedColor,
     canvasManager,
     setSelectedColor,
+    setHoveredColor,
     setCursorPosition,
     reset,
   } = useColorDropperStore();
@@ -49,6 +50,16 @@ export const ColorDropperPage = () => {
     const { clientX, clientY } = event;
     const { x, y } = canvasManager.getCursorPosition(clientX, clientY);
     setCursorPosition(x, y);
+
+    const color = canvasManager.getColorAtPosition(clientX, clientY);
+    setHoveredColor(color);
+
+    if (cursorCanvasRef.current) {
+      canvasManager.applyCursorZoom(cursorCanvasRef.current, {
+        clientX,
+        clientY,
+      });
+    }
   };
 
   const handleCanvasClick = (
@@ -66,7 +77,7 @@ export const ColorDropperPage = () => {
       {!imgData && <ImageDropzone onImageLoaded={handleImageUpload} />}
 
       {imgData && (
-        <div className="border border-1 border-gray-800 rounded p-2">
+        <div className="p-2">
           <div className="grid grid-cols-3 items-center pb-2">
             <IconButton
               className={clsx(

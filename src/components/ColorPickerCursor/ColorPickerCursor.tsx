@@ -4,7 +4,8 @@ import { useColorDropperStore } from "../../store";
 
 export const ColorPickerCursor = forwardRef<HTMLCanvasElement>((_, ref) => {
   const cursorRef = useRef<HTMLDivElement | null>(null);
-  const { cursorXPosition, cursorYPosition } = useColorDropperStore();
+  const { cursorXPosition, cursorYPosition, hoveredColor } =
+    useColorDropperStore();
 
   useEffect(() => {
     if (cursorRef.current) {
@@ -25,9 +26,13 @@ export const ColorPickerCursor = forwardRef<HTMLCanvasElement>((_, ref) => {
     >
       <canvas
         ref={ref}
-        width={100}
-        height={100}
-        className="border border-1 border-gray-800 rounded-full"
+        width={150}
+        height={150}
+        className="border-[10px] rounded-full"
+        style={{
+          imageRendering: "pixelated",
+          borderColor: hoveredColor,
+        }}
       />
     </div>
   );

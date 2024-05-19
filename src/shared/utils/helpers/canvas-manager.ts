@@ -1,3 +1,4 @@
+import { CANVAS_ZOOM_LEVEL } from "../../constants";
 import { rgbToHex } from "./colors";
 
 export class CanvasManager {
@@ -47,12 +48,23 @@ export class CanvasManager {
     this.context.drawImage(image, 0, 0, this.canvas.width, this.canvas.height);
   }
 
-  public getColorAtPosition(clientX: number, clientY: number): string {
-    if (!this.context) return "";
+  private getCanvasXYCoordinates(
+    clientX: number,
+    clientY: number
+  ): { x: number | null; y: number | null } {
+    if (!this.context) return { x: null, y: null };
 
     const canvasCoordinates = this.canvas.getBoundingClientRect();
-    const x = clientX - canvasCoordinates.left;
-    const y = clientY - canvasCoordinates.top;
+    const x = clientX - canvasCoordinates.left - CANVAS_ZOOM_LEVEL / 10;
+    const y = clientY - canvasCoordinates.top - CANVAS_ZOOM_LEVEL / 10;
+
+    return { x, y };
+  }
+
+  public getColorAtPosition(clientX: number, clientY: number): string {
+    const { x, y } = this.getCanvasXYCoordinates(clientX, clientY);
+
+    if (!this.context || x === null || y === null) return "";
 
     const pixel = this.context.getImageData(x, y, 1, 1).data;
     const [r, g, b] = pixel;
@@ -65,10 +77,73 @@ export class CanvasManager {
   ): { x: number | null; y: number | null } {
     if (!this.context) return { x: null, y: null };
 
-    const canvasCoordinates = this.canvas.getBoundingClientRect();
-    const x = clientX - canvasCoordinates.left;
-    const y = clientY - canvasCoordinates.top - canvasCoordinates.height;
+    const { x: canvasX, y: canvasY } = this.getCanvasXYCoordinates(
+      clientX,
+      clientY
+    );
 
-    return { x, y };
+    const canvasCoordinates = this.canvas.getBoundingClientRect();
+    const y = (canvasY ?? 0) - canvasCoordinates.height;
+
+    return { x: canvasX, y };
+  }
+
+  public applyCursorZoom(
+    cursorZoomCanvas: HTMLCanvasElement,
+    coordinates: { clientX: number; clientY: number },
+    zoomLevel = CANVAS_ZOOM_LEVEL
+  ) {
+    const { clientX, clientY } = coordinates;
+    const { x, y } = this.getCanvasXYCoordinates(clientX, clientY);
+
+    const zoomContext = cursorZoomCanvas.getContext("2d");
+
+    if (!zoomContext || x === null || y === null) return;
+
+    const { width, height } = cursorZoomCanvas;
+
+    zoomContext.clearRect(0, 0, width, height);
+    zoomContext.imageSmoothingEnabled = false;
+
+    zoomContext.drawImage(
+      this.canvas,
+      x - zoomLevel / 2,
+      y - zoomLevel / 2,
+      zoomLevel,
+      zoomLevel,
+      0,
+      0,
+      width,
+      height
+    );
+
+    this.drawZoomGrid(cursorZoomCanvas, zoomLevel);
+  }
+
+  private drawZoomGrid(cursorZoomCanvas: HTMLCanvasElement, zoomLevel: number) {
+    const zoomContext = cursorZoomCanvas.getContext("2d");
+
+    if (!zoomContext) return;
+
+    const step = cursorZoomCanvas.width / zoomLevel;
+    zoomContext.strokeStyle = "#a3a3a3";
+    zoomContext.lineWidth = 1;
+
+    // draw pixelated grid
+    for (let i = 0; i <= zoomLevel; i++) {
+      zoomContext.beginPath();
+      zoomContext.moveTo(i * step, 0);
+      zoomContext.lineTo(i * step, cursorZoomCanvas.height);
+      zoomContext.moveTo(0, i * step);
+      zoomContext.lineTo(cursorZoomCanvas.width, i * step);
+      zoomContext.stroke();
+    }
+
+    // highlight the center cell
+    const centerX = Math.floor(zoomLevel / 2);
+    const centerY = Math.floor(zoomLevel / 2);
+    zoomContext.strokeStyle = "#fff";
+    zoomContext.lineWidth = 1.75;
+    zoomContext.strokeRect(centerX * step, centerY * step, step, step);
   }
 }
