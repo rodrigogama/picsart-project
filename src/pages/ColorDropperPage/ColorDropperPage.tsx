@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import clsx from "clsx";
 import { ImageDropzone } from "../../components/ImageDropzone";
 import { PageShell } from "../../components/PageShell";
 import { IconColorPicker } from "../../components/IconColorPicker";
@@ -6,7 +7,6 @@ import { IconButton } from "../../components/IconButton/IconButton";
 import { CanvasImage } from "../../components/CanvasImage";
 import { ColorPickerCursor } from "../../components/ColorPickerCursor";
 import { useColorDropperStore } from "../../store";
-import clsx from "clsx";
 
 export const ColorDropperPage = () => {
   const cursorCanvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -111,7 +111,7 @@ export const ColorDropperPage = () => {
             onMouseMove={handleCanvasMouseMove}
             onMouseLeave={handleCanvasMouseLeave}
             onClick={handleCanvasClick}
-            // className="cursor-none"
+            className={clsx({ "cursor-none": isColorDropperEnabled })}
           />
           <ColorPickerCursor ref={cursorCanvasRef} />
         </div>

@@ -24,16 +24,24 @@ export const ColorPickerCursor = forwardRef<HTMLCanvasElement>((_, ref) => {
       })}
       style={{ transform: "translate3d(0px, 0px, 0px)" }}
     >
-      <canvas
-        ref={ref}
-        width={150}
-        height={150}
-        className="border-[10px] rounded-full"
-        style={{
-          imageRendering: "pixelated",
-          borderColor: hoveredColor,
-        }}
-      />
+      <div className="relative">
+        <canvas
+          ref={ref}
+          width={150}
+          height={150}
+          className="border-[10px] rounded-full"
+          style={{
+            imageRendering: "pixelated",
+            borderColor: hoveredColor,
+          }}
+        />
+
+        {hoveredColor && (
+          <div className="absolute left-1/2 top-2/3 -translate-x-1/2 -translate-y-2/3 uppercase text-center text-xs font-semibold text-white bg-gray-400 rounded-md py-1 px-2">
+            {hoveredColor}
+          </div>
+        )}
+      </div>
     </div>
   );
 });
