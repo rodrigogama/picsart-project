@@ -47,11 +47,28 @@ export class CanvasManager {
     this.context.drawImage(image, 0, 0, this.canvas.width, this.canvas.height);
   }
 
-  public getColorAtPosition(x: number, y: number): string | null {
-    if (!this.context) return null;
+  public getColorAtPosition(clientX: number, clientY: number): string {
+    if (!this.context) return "";
+
+    const canvasCoordinates = this.canvas.getBoundingClientRect();
+    const x = clientX - canvasCoordinates.left;
+    const y = clientY - canvasCoordinates.top;
 
     const pixel = this.context.getImageData(x, y, 1, 1).data;
     const [r, g, b] = pixel;
     return rgbToHex(r, g, b);
+  }
+
+  public getCursorPosition(
+    clientX: number,
+    clientY: number
+  ): { x: number | null; y: number | null } {
+    if (!this.context) return { x: null, y: null };
+
+    const canvasCoordinates = this.canvas.getBoundingClientRect();
+    const x = clientX - canvasCoordinates.left;
+    const y = clientY - canvasCoordinates.top - canvasCoordinates.height;
+
+    return { x, y };
   }
 }
